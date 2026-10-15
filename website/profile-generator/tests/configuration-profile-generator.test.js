@@ -165,7 +165,7 @@ describe('configuration profile generator', function() {
                 (generationResult.contentDidNotMatchProfileType ? generationForFailureMessage : '')
               );
 
-              let checkFailures = checkExpectations(expectations, generatedProfile, profileType);
+              let checkFailures = checkExpectations(expectations, generatedProfile, profileType, testCase.forFleet);
               assert.strictEqual(
                 checkFailures.length, 0,
                 `${testCase.canary ? 'CANARY -- ' : ''}${checkFailures.length} check(s) failed:\n` +
@@ -240,6 +240,7 @@ async function generateOnce(testCase) {
         baseModel: BASE_MODEL,
         effort: EFFORT,
         disableThinking: DISABLE_THINKING,
+        forFleet: !!testCase.forFleet,
       });
       return { generationResult, elapsedMs: Date.now() - startedAt };
     } catch (err) {

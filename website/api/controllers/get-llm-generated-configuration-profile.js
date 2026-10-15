@@ -21,6 +21,11 @@ module.exports = {
     naturalLanguageInstructions: {
       type: 'string',
       required: true
+    },
+    forFleet: {
+      type: 'boolean',
+      defaultsTo: false,
+      description: 'Whether the request comes from a Fleet server, which turns on Fleet\'s own rules.'
     }
   },
 
@@ -36,7 +41,7 @@ module.exports = {
   },
 
 
-  fn: async function ({profileType, naturalLanguageInstructions}) {
+  fn: async function ({profileType, naturalLanguageInstructions, forFleet}) {
 
     // Generate a random room name.
     let roomId = await sails.helpers.strings.random();
@@ -109,6 +114,7 @@ Respond in JSON with this data shape:
     let generationResult = await sails.helpers.generateConfigurationProfile.with({
       profileType,
       naturalLanguageInstructions,
+      forFleet,
     })
     .intercept((err)=>{
       sails.log.warn(`When trying to generate a configuration profile for a user, an error occurred. Full error: ${require('util').inspect(err, {depth: 2})}`);

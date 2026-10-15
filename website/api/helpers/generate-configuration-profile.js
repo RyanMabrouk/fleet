@@ -52,6 +52,12 @@ module.exports = {
       description: 'Whether or not to narrow the .mobileconfig schema to the payload types this request needs before generating.',
     },
 
+    forFleet: {
+      type: 'boolean',
+      defaultsTo: false,
+      description: 'Whether the request comes from a Fleet server, which turns on Fleet\'s own rules.',
+    },
+
   },
 
 
@@ -65,7 +71,7 @@ module.exports = {
   },
 
 
-  fn: async function ({profileType, naturalLanguageInstructions, baseModel, effort, disableThinking, useLighterResponseShape, useApplePayloadTypeLookup}) {
+  fn: async function ({profileType, naturalLanguageInstructions, baseModel, effort, disableThinking, useLighterResponseShape, useApplePayloadTypeLookup, forFleet}) {
 
     // Each profile type is generated with the cheapest configuration measured to clear the test suite's 95% bar
     // and its latency budget.  Sonnet 5.5 at low effort was the only model to clear both for every type when
@@ -93,6 +99,7 @@ module.exports = {
       naturalLanguageInstructions,
       useLighterResponseShape,
       useApplePayloadTypeLookup,
+      forFleet,
     });
     let configuredAt = Date.now();
 
