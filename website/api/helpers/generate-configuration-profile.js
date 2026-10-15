@@ -155,6 +155,10 @@ module.exports = {
     }
 
     let profile = withDoubleEscapedLineBreaksRepaired(rawResult.configurationProfile, profileType);
+    // Before the type check, which a profile wrapped in a SyncML envelope would fail.
+    if(profileType === 'csp') {
+      profile = await sails.helpers.removeSyncmlEnvelopeFromWindowsProfile.with({ profile });
+    }
 
     // The type is promised to whoever asked for it, so content of another type is a failed generation rather
     // than a profile: a .mobileconfig handed back as a declaration is rejected by an MDM, or worse, accepted.
