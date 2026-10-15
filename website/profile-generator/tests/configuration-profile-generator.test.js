@@ -26,7 +26,7 @@
 const assert = require('assert');
 const util = require('util');
 
-const { TEST_CASES, checkExpectations, isWorthRetryingAfterAPause } = require('../configuration-profile-generator-cases');
+const { TEST_CASES, checkExpectations, checkDeclineReason, isWorthRetryingAfterAPause } = require('../configuration-profile-generator-cases');
 
 
 // Overridable because the interesting question is usually whether a cheaper model can still pass
@@ -151,6 +151,8 @@ describe('configuration profile generator', function() {
                   whatTheLookupProvided +
                   generationForFailureMessage
                 );
+                let declineFailures = checkDeclineReason(rawResult.reasonWhyAProfileCouldNotBeGenerated);
+                assert.strictEqual(declineFailures.length, 0, declineFailures.join('\n'));
                 return;
               }
 
@@ -163,7 +165,7 @@ describe('configuration profile generator', function() {
                 (generationResult.contentDidNotMatchProfileType ? generationForFailureMessage : '')
               );
 
-              let checkFailures = checkExpectations(expectations, generatedProfile);
+              let checkFailures = checkExpectations(expectations, generatedProfile, profileType);
               assert.strictEqual(
                 checkFailures.length, 0,
                 `${testCase.canary ? 'CANARY -- ' : ''}${checkFailures.length} check(s) failed:\n` +

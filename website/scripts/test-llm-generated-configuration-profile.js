@@ -103,7 +103,7 @@ csp cases report as not-checked either way.`
 
     let path = require('path');
     let util = require('util');
-    let { TEST_CASES, checkExpectations, isWorthRetryingAfterAPause } = require('../profile-generator/configuration-profile-generator-cases');
+    let { TEST_CASES, checkExpectations, checkDeclineReason, isWorthRetryingAfterAPause } = require('../profile-generator/configuration-profile-generator-cases');
 
     const MAX_ELAPSED_MS = 10000;
 
@@ -300,11 +300,11 @@ csp cases report as not-checked either way.`
           // Content of the wrong type is a broken generation, not the model declining, even where declining was the right answer.
           checkFailures = [`generated content that is not a ${testCase.profileType} profile`];
         } else if(abstained) {
-          checkFailures = expectations.expectFailure ? [] : [
+          checkFailures = expectations.expectFailure ? checkDeclineReason(generationResult.reasonWhyAProfileCouldNotBeGenerated) : [
             `abstained but a profile was expected -- reason given: ${JSON.stringify(generationResult.reasonWhyAProfileCouldNotBeGenerated || '(none)')}`
           ];
         } else {
-          checkFailures = checkExpectations(expectations, generatedProfile);
+          checkFailures = checkExpectations(expectations, generatedProfile, testCase.profileType);
         }
 
         if(elapsedMs > MAX_ELAPSED_MS) {
