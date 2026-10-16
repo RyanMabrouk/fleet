@@ -185,7 +185,9 @@ module.exports = {
     };
 
     if(profileType === 'ddm' && forFleet) {
-      result.generatedProfile.profile = await sails.helpers.addUserPayloadScopeToDeclaration.with({ profile: result.generatedProfile.profile });
+      let withUserScope = await sails.helpers.addUserPayloadScopeToDeclaration.with({ profile: result.generatedProfile.profile, deliveryNotes: result.generatedProfile.deliveryNotes || '' });
+      result.generatedProfile.profile = withUserScope.profile;
+      result.generatedProfile.deliveryNotes = withUserScope.deliveryNotes;
     }
 
     if(profileType === 'mobileconfig') {
