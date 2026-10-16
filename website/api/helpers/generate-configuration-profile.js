@@ -177,6 +177,10 @@ module.exports = {
       additionalProfiles: [],
     };
 
+    if(profileType === 'mobileconfig') {
+      result.generatedProfile.deliveryNotes = await sails.helpers.addSoftwareUpdateRemovalNote.with({ profile: result.generatedProfile.profile, deliveryNotes: result.generatedProfile.deliveryNotes || '' });
+    }
+
     if(profileType === 'csp') {
       let withAdmxInstalls = await sails.helpers.addAdmxInstallCommandsToWindowsProfile.with({ profile: result.generatedProfile.profile });
       result.generatedProfile.profile = withAdmxInstalls.profile;
