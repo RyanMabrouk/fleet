@@ -184,7 +184,7 @@ module.exports = {
       additionalProfiles: [],
     };
 
-    if(profileType === 'ddm' && forFleet) {
+    if(profileType === 'ddm' && forFleet && _.isString(result.generatedProfile.profile)) {
       let withUserScope = await sails.helpers.addUserPayloadScopeToDeclaration.with({ profile: result.generatedProfile.profile, deliveryNotes: result.generatedProfile.deliveryNotes || '' });
       result.generatedProfile.profile = withUserScope.profile;
       result.generatedProfile.deliveryNotes = withUserScope.deliveryNotes;
