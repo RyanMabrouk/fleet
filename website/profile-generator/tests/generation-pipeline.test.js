@@ -125,6 +125,25 @@ describe('configuration profile generation pipeline', function() {
 
   });
 
+  describe('tidies the profile before returning it', function() {
+
+    let replaceCommand = '<Replace>\n  <Item>\n    <Target>\n      <LocURI>./Device/Vendor/MSFT/Policy/Config/Camera/AllowCamera</LocURI>\n    </Target>\n    <Data>0</Data>\n  </Item>\n</Replace>';
+
+    it('strips a SyncML envelope from a Windows profile instead of failing the type check', async function() {
+      generationOutcomes = [responseWith(`<?xml version="1.0" encoding="UTF-8"?>\n<SyncML xmlns="SYNCML:SYNCML1.2">\n<SyncBody>\n${replaceCommand}\n<Final/>\n</SyncBody>\n</SyncML>`)];
+      let result = await generate('csp');
+      assert.strictEqual(result.couldNotGenerateProfile, false);
+      assert.strictEqual(result.generatedProfile.profile, replaceCommand);
+    });
+
+    it('notes that legacy software update settings stop working in macOS 27', async function() {
+      generationOutcomes = [responseWith('<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0">\n<dict>\n<key>PayloadType</key>\n<string>com.apple.SoftwareUpdate</string>\n</dict>\n</plist>')];
+      let result = await generate('mobileconfig');
+      assert.match(result.generatedProfile.deliveryNotes, /macOS 27/);
+    });
+
+  });
+
   describe('retries a failed generation once', function() {
 
     for (let statusCode of [429, 529, 500]) {
