@@ -49,7 +49,7 @@ out of a hundred.  MDMs reject that on upload, since the envelope carries sessio
       if(syncBody) {
         unwrapped = syncBody[1].trim();
       }
-      unwrapped = unwrapped.replace(/\s*<Final\s*\/>$/, '');
+      unwrapped = unwrapped.replace(/\s*<Final\s*(?:\/>|>\s*<\/Final>)$/, '');
     }
     return unwrapped === profile.trim() ? profile : unwrapped;
 

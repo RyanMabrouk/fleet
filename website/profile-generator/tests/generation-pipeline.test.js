@@ -136,6 +136,12 @@ describe('configuration profile generation pipeline', function() {
       assert.strictEqual(result.generatedProfile.profile, replaceCommand);
     });
 
+    it('strips an envelope that ends with <Final></Final>', async function() {
+      generationOutcomes = [responseWith(`<SyncML><SyncBody>${replaceCommand}<Final></Final></SyncBody></SyncML>`)];
+      let result = await generate('csp');
+      assert.strictEqual(result.generatedProfile.profile, replaceCommand);
+    });
+
     it('notes that legacy software update settings stop working in macOS 27', async function() {
       generationOutcomes = [responseWith('<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0">\n<dict>\n<key>PayloadType</key>\n<string>com.apple.SoftwareUpdate</string>\n</dict>\n</plist>')];
       let result = await generate('mobileconfig');
